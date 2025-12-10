@@ -1,36 +1,36 @@
+import streamlit as st
 import pandas as pd
-import os
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import joblib
+import os
 
-# Path to dataset (root directory)
-file_path = "train.csv"
-
-# Check if file exists
-if not os.path.exists(file_path):
-    raise FileNotFoundError(f"{file_path} not found. Please upload the dataset to the repo root.")
+st.title("Titanic KNN Classification")
 
 # Load dataset
+file_path = "train.csv"
+if not os.path.exists(file_path):
+    st.error(f"{file_path} not found. Please upload the dataset in the repo root.")
+    st.stop()
+
 df = pd.read_csv(file_path)
 
-# Rest of the code remains the same...
+# Display first 5 rows
+st.subheader("First 5 rows of the dataset")
+st.dataframe(df.head())
+
+# Preprocessing
 features = ['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare']
 target = 'Survived'
 
-X = df[features]
+X = pd.get_dummies(df[features], drop_first=True)
 y = df[target]
-
-# Convert categorical variables to numeric
-X = pd.get_dummies(X, columns=['Sex'], drop_first=True)
-
-# Handle missing values
 X = pd.DataFrame(SimpleImputer(strategy='mean').fit_transform(X), columns=X.columns)
 
-# Split and scale
+# Split & scale
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
@@ -40,7 +40,7 @@ X_test = scaler.transform(X_test)
 knn = KNeighborsClassifier(n_neighbors=5)
 knn.fit(X_train, y_train)
 
-# Evaluate
+# Predictions & metrics
 y_pred = knn.predict(X_test)
 metrics_df = pd.DataFrame({
     "Metric": ["Accuracy", "Precision", "Recall", "F1-Score"],
@@ -51,9 +51,10 @@ metrics_df = pd.DataFrame({
         round(f1_score(y_test, y_pred), 2)
     ]
 })
-print("\n=== KNN Model Evaluation Metrics ===")
-print(metrics_df.to_string(index=False))
+
+st.subheader("KNN Model Evaluation Metrics")
+st.table(metrics_df)
 
 # Save model
 joblib.dump(knn, "knn_titanic_model.pkl")
-print("✅ KNN model saved as knn_titanic_model.pkl")
+st.success("✅ KNN model saved as knn_titanic_model.pkl")
