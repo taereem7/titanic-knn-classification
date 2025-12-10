@@ -18,13 +18,11 @@ if not os.path.exists(file_path):
     st.stop()
 
 df = pd.read_csv(file_path)
-st.subheader("First 5 Rows of Dataset")
-st.dataframe(df.head())
 
 # -----------------------------
 # Step 2: Preprocessing & Model Training
 # -----------------------------
-# Only use features user can reasonably know
+# Only use features user can realistically know
 features = ['Pclass', 'Sex', 'Age']
 target = 'Survived'
 
