@@ -12,9 +12,9 @@ st.title("Titanic KNN Survival Predictor")
 # -----------------------------
 # Step 1: Load Dataset
 # -----------------------------
-file_path = "train.csv"  # Dataset should be in repo root
+file_path = "train.csv"  # Dataset in repo root
 if not os.path.exists(file_path):
-    st.error(f"{file_path} not found. Please upload the Titanic dataset in the repo root.")
+    st.error(f"{file_path} not found. Please add the Titanic dataset to the repo root.")
     st.stop()
 
 df = pd.read_csv(file_path)
@@ -24,7 +24,7 @@ st.dataframe(df.head())
 # -----------------------------
 # Step 2: Preprocessing & Model Training
 # -----------------------------
-features = ['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare']
+features = ['Pclass', 'Sex', 'Age', 'Fare']
 target = 'Survived'
 
 X = pd.get_dummies(df[features], drop_first=True)
@@ -50,22 +50,18 @@ st.success("✅ KNN model trained and saved as knn_titanic_model.pkl")
 # -----------------------------
 st.subheader("Predict Survival for a Passenger")
 
-# Sensible inputs
+# Only inputs that user can realistically know
 pclass = st.selectbox("Passenger Class (1 = First, 2 = Second, 3 = Third)", [1, 2, 3])
 sex = st.selectbox("Gender", ["Male", "Female"])
 age = st.slider("Age of Passenger", 0, 100, 30)
-siblings = st.slider("Number of Siblings/Spouses aboard", 0, 8, 0)
-parents_children = st.slider("Number of Parents/Children aboard", 0, 6, 0)
-fare = st.slider("Ticket Fare", 0.0, 500.0, 32.0)
+fare = st.number_input("Ticket Fare", min_value=0.0, max_value=1000.0, value=32.0, step=0.5)
 
 # Prepare input for model
 input_df = pd.DataFrame({
     'Pclass': [pclass],
     'Age': [age],
-    'SibSp': [siblings],
-    'Parch': [parents_children],
     'Fare': [fare],
-    'Sex_male': [1 if sex.lower() == 'male' else 0]  # One-hot encoding
+    'Sex_male': [1 if sex.lower() == 'male' else 0]
 })
 
 # Match columns
