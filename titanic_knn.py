@@ -1,5 +1,6 @@
-# knn_titanic_classification.py
+# titanic_knn.py
 
+import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -11,7 +12,12 @@ import joblib
 # -----------------------------
 # Step 1: Load Dataset
 # -----------------------------
-df = pd.read_csv("/kaggle/input/titanic/train.csv")  # Kaggle input path
+file_path = "data/train.csv"  # Relative path in your repository
+
+if not os.path.exists(file_path):
+    raise FileNotFoundError(f"{file_path} not found. Please add the dataset to your repo.")
+
+df = pd.read_csv(file_path)
 
 # Display first 5 rows
 print("=== First 5 Rows of Titanic Dataset ===")
@@ -77,5 +83,6 @@ print(metrics_df.to_string(index=False))
 # -----------------------------
 # Step 8: Save Model as .pkl
 # -----------------------------
-joblib.dump(knn, "/kaggle/working/knn_titanic_model.pkl")
-print("✅ KNN model saved as /kaggle/working/knn_titanic_model.pkl")
+output_path = "knn_titanic_model.pkl"  # Saved in the repository working directory
+joblib.dump(knn, output_path)
+print(f"✅ KNN model saved as {output_path}")
