@@ -1,7 +1,5 @@
-# titanic_knn.py
-
-import os
 import pandas as pd
+import os
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
@@ -9,23 +7,17 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import joblib
 
-# -----------------------------
-# Step 1: Load Dataset
-# -----------------------------
-file_path = "data/train.csv"  # Relative path in your repository
+# Path to dataset (root directory)
+file_path = "train.csv"
 
+# Check if file exists
 if not os.path.exists(file_path):
-    raise FileNotFoundError(f"{file_path} not found. Please add the dataset to your repo.")
+    raise FileNotFoundError(f"{file_path} not found. Please upload the dataset to the repo root.")
 
+# Load dataset
 df = pd.read_csv(file_path)
 
-# Display first 5 rows
-print("=== First 5 Rows of Titanic Dataset ===")
-print(df.head().to_string(index=False))
-
-# -----------------------------
-# Step 2: Feature Selection & Preprocessing
-# -----------------------------
+# Rest of the code remains the same...
 features = ['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare']
 target = 'Survived'
 
@@ -36,37 +28,20 @@ y = df[target]
 X = pd.get_dummies(X, columns=['Sex'], drop_first=True)
 
 # Handle missing values
-imputer = SimpleImputer(strategy='mean')
-X = pd.DataFrame(imputer.fit_transform(X), columns=X.columns)
+X = pd.DataFrame(SimpleImputer(strategy='mean').fit_transform(X), columns=X.columns)
 
-# -----------------------------
-# Step 3: Split Dataset
-# -----------------------------
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
-)
-
-# -----------------------------
-# Step 4: Feature Scaling
-# -----------------------------
+# Split and scale
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
-# -----------------------------
-# Step 5: Train KNN Model
-# -----------------------------
+# Train KNN
 knn = KNeighborsClassifier(n_neighbors=5)
 knn.fit(X_train, y_train)
 
-# -----------------------------
-# Step 6: Make Predictions
-# -----------------------------
+# Evaluate
 y_pred = knn.predict(X_test)
-
-# -----------------------------
-# Step 7: Evaluate Model
-# -----------------------------
 metrics_df = pd.DataFrame({
     "Metric": ["Accuracy", "Precision", "Recall", "F1-Score"],
     "Score": [
@@ -76,13 +51,9 @@ metrics_df = pd.DataFrame({
         round(f1_score(y_test, y_pred), 2)
     ]
 })
-
 print("\n=== KNN Model Evaluation Metrics ===")
 print(metrics_df.to_string(index=False))
 
-# -----------------------------
-# Step 8: Save Model as .pkl
-# -----------------------------
-output_path = "knn_titanic_model.pkl"  # Saved in the repository working directory
-joblib.dump(knn, output_path)
-print(f"✅ KNN model saved as {output_path}")
+# Save model
+joblib.dump(knn, "knn_titanic_model.pkl")
+print("✅ KNN model saved as knn_titanic_model.pkl")
