@@ -5,20 +5,21 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
 from sklearn.neighbors import KNeighborsClassifier
 import joblib
+import os
 
 st.title("Titanic KNN Survival Predictor")
 
 # -----------------------------
-# Step 1: Dataset Upload
+# Step 1: Load Dataset
 # -----------------------------
-uploaded_file = st.file_uploader("Upload Titanic CSV dataset", type=["csv"])
-if uploaded_file is not None:
-    df = pd.read_csv(uploaded_file)
-    st.subheader("First 5 Rows of Dataset")
-    st.dataframe(df.head())
-else:
-    st.warning("Please upload the Titanic CSV dataset to proceed.")
+file_path = "train.csv"  # Dataset should be in repo root
+if not os.path.exists(file_path):
+    st.error(f"{file_path} not found. Please upload the Titanic dataset in the repo root.")
     st.stop()
+
+df = pd.read_csv(file_path)
+st.subheader("First 5 Rows of Dataset")
+st.dataframe(df.head())
 
 # -----------------------------
 # Step 2: Preprocessing & Model Training
