@@ -40,9 +40,8 @@ X_test = scaler.transform(X_test)
 knn = KNeighborsClassifier(n_neighbors=5)
 knn.fit(X_train, y_train)
 
-# Save model
+# Save model (silent, no UI message)
 joblib.dump(knn, "knn_titanic_model.pkl")
-st.success("✅ KNN model trained and saved as knn_titanic_model.pkl")
 
 # -----------------------------
 # Step 3: User Input for Prediction
