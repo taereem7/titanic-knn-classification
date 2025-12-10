@@ -6,11 +6,12 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+import joblib
 
 # -----------------------------
 # Step 1: Load Dataset
 # -----------------------------
-df = pd.read_csv("/kaggle/input/titanic/train.csv")  # replace with your Kaggle dataset path
+df = pd.read_csv("/kaggle/input/titanic/train.csv")  # Kaggle input path
 
 # Display first 5 rows
 print("=== First 5 Rows of Titanic Dataset ===")
@@ -72,3 +73,9 @@ metrics_df = pd.DataFrame({
 
 print("\n=== KNN Model Evaluation Metrics ===")
 print(metrics_df.to_string(index=False))
+
+# -----------------------------
+# Step 8: Save Model as .pkl
+# -----------------------------
+joblib.dump(knn, "/kaggle/working/knn_titanic_model.pkl")
+print("✅ KNN model saved as /kaggle/working/knn_titanic_model.pkl")
