@@ -24,7 +24,8 @@ st.dataframe(df.head())
 # -----------------------------
 # Step 2: Preprocessing & Model Training
 # -----------------------------
-features = ['Pclass', 'Sex', 'Age', 'Fare']
+# Only use features user can reasonably know
+features = ['Pclass', 'Sex', 'Age']
 target = 'Survived'
 
 X = pd.get_dummies(df[features], drop_first=True)
@@ -50,17 +51,15 @@ st.success("✅ KNN model trained and saved as knn_titanic_model.pkl")
 # -----------------------------
 st.subheader("Predict Survival for a Passenger")
 
-# Only inputs that user can realistically know
+# Only inputs the user realistically knows
 pclass = st.selectbox("Passenger Class (1 = First, 2 = Second, 3 = Third)", [1, 2, 3])
 sex = st.selectbox("Gender", ["Male", "Female"])
 age = st.slider("Age of Passenger", 0, 100, 30)
-fare = st.number_input("Ticket Fare", min_value=0.0, max_value=1000.0, value=32.0, step=0.5)
 
 # Prepare input for model
 input_df = pd.DataFrame({
     'Pclass': [pclass],
     'Age': [age],
-    'Fare': [fare],
     'Sex_male': [1 if sex.lower() == 'male' else 0]
 })
 
